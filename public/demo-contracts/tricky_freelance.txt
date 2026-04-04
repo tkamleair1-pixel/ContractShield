@@ -1,0 +1,45 @@
+FREELANCE SERVICES AGREEMENT
+
+This Freelance Services Agreement ("Agreement") is made effective as of March 1, 2025, by and between:
+
+CLIENT: TechVenture Solutions Inc., a Delaware corporation ("Client")
+CONTRACTOR: [Contractor Name], an independent contractor ("Contractor")
+
+1. SCOPE OF WORK
+Contractor agrees to provide web development, design, and related digital services as described in project briefs provided by Client from time to time ("Services"). Client may modify the scope of any project at any time. Contractor acknowledges that scope changes do not automatically entitle Contractor to additional compensation. Any request for additional payment due to scope changes must be submitted in writing and is subject to Client's approval at Client's sole discretion.
+
+2. COMPENSATION
+Client shall pay Contractor a flat project fee as agreed upon for each project brief. Payment shall be made within SIXTY (60) days after Client's acceptance of the final deliverables. Client's acceptance shall be at Client's sole discretion and may require unlimited rounds of revisions at no additional cost. Contractor shall not be entitled to payment for any work product that Client deems unsatisfactory. No deposit or milestone payments shall be provided.
+
+3. INTELLECTUAL PROPERTY
+All work product, including but not limited to code, designs, concepts, ideas, methodologies, processes, and any derivative works created during the term of this Agreement, shall be the exclusive property of Client as "work made for hire." This includes any work product created using Contractor's pre-existing tools, frameworks, or libraries. Contractor assigns all rights, title, and interest in any intellectual property developed during the term of this Agreement, including any IP developed on Contractor's own time if it relates in any way to Client's business.
+
+4. NON-COMPETE AND NON-SOLICITATION
+During the term of this Agreement and for a period of TWENTY-FOUR (24) months following termination, Contractor shall not:
+(a) Provide services to any business that competes with Client in any market or industry in which Client operates or plans to operate
+(b) Solicit or accept work from any of Client's current, former, or prospective clients
+(c) Develop any product or service that is similar to or competitive with Client's offerings
+Violation of this provision shall result in liquidated damages of $50,000.00 per occurrence.
+
+5. CONFIDENTIALITY
+Contractor shall maintain strict confidentiality of all Client information indefinitely, including after termination of this Agreement. "Confidential Information" includes all information shared by Client, whether marked confidential or not. Contractor shall not use any knowledge or skills gained during the engagement for the benefit of any other client or personal projects.
+
+6. TERMINATION
+Client may terminate this Agreement at any time, for any reason, with immediate effect. Upon termination by Client, Contractor shall deliver all completed and in-progress work product and shall be entitled to compensation only for work explicitly accepted by Client prior to termination. Contractor may terminate this Agreement with NINETY (90) days written notice, during which Contractor must continue providing Services. Contractor's termination shall not release Contractor from the non-compete obligations.
+
+7. LIABILITY AND INDEMNIFICATION
+Contractor shall indemnify Client against all claims arising from the Services, including claims of intellectual property infringement, regardless of fault. Client's total liability to Contractor under this Agreement shall not exceed the fees paid to Contractor in the thirty (30) days preceding the claim. Contractor's liability to Client shall be unlimited.
+
+8. INDEPENDENT CONTRACTOR STATUS
+Contractor acknowledges status as an independent contractor and shall not be entitled to any employee benefits. Contractor is responsible for all taxes, insurance, equipment, and workspace costs. However, Contractor must be available during Client's business hours (9 AM - 6 PM EST, Monday through Saturday) and must respond to communications within two (2) hours during business hours.
+
+9. WARRANTIES
+Contractor warrants that all deliverables will be free from defects and will perform as specified for a period of twelve (12) months after delivery. Contractor shall correct any defects at no additional charge. Client makes no warranties regarding project specifications, timelines, or payment.
+
+10. DISPUTE RESOLUTION
+Any disputes shall be resolved in the courts of Delaware. Contractor agrees to bear all legal costs and attorney fees regardless of outcome. This Agreement constitutes the entire understanding between the parties and supersedes all prior negotiations.
+
+AGREED AND ACCEPTED:
+
+Client: ______________________ Date: __________
+Contractor: ______________________ Date: __________

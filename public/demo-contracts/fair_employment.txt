@@ -1,0 +1,64 @@
+EMPLOYMENT AGREEMENT
+
+This Employment Agreement ("Agreement") is entered into as of April 1, 2025, by and between:
+
+EMPLOYER: Brightpath Technologies Inc., a California corporation ("Company")
+EMPLOYEE: [Employee Name] ("Employee")
+
+1. POSITION AND DUTIES
+Employee is hired for the position of Senior Software Engineer, reporting to the Engineering Director. Employee's duties shall include software development, code review, mentoring junior developers, and contributing to technical architecture decisions. The Company may reasonably modify Employee's duties from time to time in consultation with Employee, consistent with Employee's skills and experience level.
+
+2. COMPENSATION
+Employee shall receive an annual base salary of $165,000.00, payable in bi-weekly installments in accordance with the Company's standard payroll schedule. Salary reviews shall be conducted annually, and any increases shall be at the Company's discretion based on performance and market conditions. Employee shall also be eligible for an annual performance bonus of up to 15% of base salary, based on individual and company performance metrics communicated at the beginning of each fiscal year.
+
+3. EQUITY COMPENSATION
+Employee shall be granted stock options to purchase 10,000 shares of the Company's common stock at fair market value as of the grant date. Options shall vest over four (4) years with a one (1) year cliff, with monthly vesting thereafter. In the event of a change of control (acquisition or merger), 50% of unvested options shall immediately vest. Detailed terms are set forth in the Company's Equity Incentive Plan.
+
+4. BENEFITS
+Employee shall be eligible for the Company's standard benefits package, including:
+(a) Health insurance (medical, dental, vision) — Company pays 90% of premiums for Employee and 75% for dependents
+(b) 401(k) retirement plan with 4% company match
+(c) Twenty (20) days paid time off per year, plus ten (10) company holidays
+(d) Twelve (12) weeks paid parental leave
+(e) $2,000 annual professional development budget
+(f) Flexible work arrangement with three (3) days remote work per week
+
+5. CONFIDENTIALITY
+During and after employment, Employee shall maintain confidentiality of the Company's proprietary information, trade secrets, and other confidential business information. Confidential information does not include information that: (a) is or becomes publicly available through no fault of Employee; (b) was known to Employee prior to employment; (c) is independently developed by Employee outside of work responsibilities; or (d) is disclosed pursuant to legal requirement with reasonable prior notice to the Company.
+
+6. INTELLECTUAL PROPERTY
+Work product created by Employee within the scope of employment and using Company resources belongs to the Company. Employee retains ownership of: (a) inventions developed entirely on Employee's own time without Company equipment or resources and unrelated to Company business; (b) pre-existing IP that Employee brings to the role, as documented in Exhibit A. Employee grants Company a non-exclusive license to use any pre-existing IP incorporated into Company products.
+
+7. NON-COMPETE AND NON-SOLICITATION
+For a period of twelve (12) months following termination, Employee agrees not to:
+(a) Directly compete with the Company by working for a direct competitor in the same metropolitan area in a substantially similar role
+(b) Solicit Company employees for employment
+In consideration of these restrictions, the Company shall pay Employee one (1) month of base salary for each month the non-compete is enforced, paid monthly. These restrictions shall not apply if Employee is terminated without cause.
+
+8. TERMINATION
+Either party may terminate this Agreement with thirty (30) days written notice. If the Company terminates without cause, Employee shall receive:
+(a) Three (3) months of base salary as severance
+(b) Company-paid COBRA health insurance for three (3) months
+(c) Acceleration of any stock options that would have vested in the ninety (90) days following termination
+Termination for cause requires written notice specifying the grounds and a thirty (30) day opportunity to cure (except for gross misconduct).
+
+9. DISPUTE RESOLUTION
+The parties agree to attempt good-faith mediation before pursuing arbitration or litigation. If mediation fails, disputes shall be resolved through binding arbitration conducted by JAMS under its Employment Arbitration Rules. Each party shall bear its own costs, with arbitration fees split equally. Nothing in this section prevents either party from seeking injunctive relief in court for IP or confidentiality violations.
+
+10. AT-WILL EMPLOYMENT
+This Agreement does not guarantee employment for any specific period. Employment is at-will, meaning either party may end the relationship at any time, subject to the notice and severance provisions above.
+
+11. MISCELLANEOUS
+(a) This Agreement constitutes the entire understanding between the parties
+(b) Amendments must be in writing and signed by both parties
+(c) If any provision is found unenforceable, it shall be modified to the minimum extent necessary
+(d) This Agreement is governed by the laws of the State of California
+(e) Employee acknowledges having had the opportunity to consult with an attorney before signing
+
+AGREED AND ACCEPTED:
+
+Company: ______________________ Date: __________
+Employee: ______________________ Date: __________
+
+EXHIBIT A — Pre-Existing Employee IP:
+[To be completed by Employee prior to start date]

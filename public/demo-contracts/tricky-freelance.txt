@@ -1,0 +1,16 @@
+INDEPENDENT CONTRACTOR AGREEMENT
+
+This Agreement is between TECH STARTUP INC (Client) and Contractor for design services.
+
+1. SCOPE: Contractor will provide UI/UX design services for Client's mobile application.
+2. DELIVERABLES: All design files, including mockups, prototypes, wireframes, unused concepts, and any work product created during the term.
+3. PAYMENT: $5,000 upon completion. Payment terms: Net-60 from invoice date.
+4. INTELLECTUAL PROPERTY: Client owns ALL work product, including preliminary sketches, unused designs, and any concepts discussed or created during brainstorming sessions. Contractor assigns all rights, title, and interest.
+5. KILL FEE: If project is cancelled, Contractor receives no compensation for work completed.
+6. NON-COMPETE: Contractor agrees not to work in related fields including design, UX, technology, or consulting for any competing business for 24 months following project completion within a 100-mile radius.
+7. CONFIDENTIALITY: Contractor may not disclose involvement in this project or use work in portfolio without written permission.
+8. REVISIONS: Unlimited revisions at no additional cost until Client is satisfied.
+9. TIMELINE: All deliverables due within 2 weeks. Delays result in $200/day penalty.
+10. TERMINATION: Client may terminate at any time. Contractor must provide 30 days notice.
+11. WARRANTIES: Contractor warrants all work is original and indemnifies Client against any claims.
+12. INDEPENDENT CONTRACTOR: Contractor is responsible for all taxes, insurance, and benefits.
