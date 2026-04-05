@@ -47,6 +47,13 @@ Return this EXACT structure:
   "negotiationPoints": ["<actionable negotiation advice 1>", "<actionable advice 2>"]
 }`;
 
+// Fast, reliable free models on OpenRouter
+const MODELS = [
+  "qwen/qwen3.6-plus:free",
+  "nvidia/nemotron-3-super-120b-a12b:free",
+  "google/gemma-3-27b-it:free",
+];
+
 function extractJSON(text: string): any {
   let cleaned = text.trim();
   cleaned = cleaned.replace(/^```json\s*/i, '').replace(/^```\s*/i, '').replace(/\s*```$/i, '').trim();
@@ -54,6 +61,35 @@ function extractJSON(text: string): any {
   const match = cleaned.match(/\{[\s\S]*\}/);
   if (match) cleaned = match[0];
   return JSON.parse(cleaned);
+}
+
+async function callOpenRouter(model: string, contractText: string, apiKey: string): Promise<any | null> {
+  const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+      "HTTP-Referer": "http://localhost:3000",
+      "X-Title": "ContractShield"
+    },
+    body: JSON.stringify({
+      model,
+      messages: [
+        { role: "system", content: SYSTEM_PROMPT },
+        { role: "user", content: `Analyze this contract:\n\n${contractText}` }
+      ],
+      temperature: 0.1,
+      max_tokens: 3000,
+    })
+  });
+
+  if (!response.ok) return null;
+
+  const data = await response.json();
+  const content = data.choices?.[0]?.message?.content;
+  if (!content) return null;
+
+  return extractJSON(content);
 }
 
 export async function POST(req: NextRequest) {
@@ -64,47 +100,29 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Missing contract text.' }, { status: 400 });
     }
 
-    const apiKey = process.env.GROK_API_KEY; // Switching to xAI Grok API
+    const apiKey = process.env.OPENROUTER_API_KEY;
     if (!apiKey) {
-      return NextResponse.json({ error: 'GROK_API_KEY not set in .env.local' }, { status: 500 });
+      return NextResponse.json({ error: 'OPENROUTER_API_KEY not set.' }, { status: 500 });
     }
 
-    const response = await fetch("https://api.x.ai/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${apiKey}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        model: "grok-beta", // or grok-2
-        messages: [
-          { role: "system", content: SYSTEM_PROMPT },
-          { role: "user", content: `Analyze this contract:\n\n${contractText}` }
-        ],
-        temperature: 0.1,
-        stream: false
-      })
+    // Parallel race — all 3 models fire at once, first one to succeed wins
+    const racePromises = MODELS.map(async (model) => {
+      const result = await callOpenRouter(model, contractText, apiKey);
+      if (result) {
+        console.log(`[ContractShield] ✅ Success: ${model}`);
+        return result;
+      }
+      throw new Error(`${model} failed`);
     });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error(`[ContractShield] Grok API Error: ${response.status}`, errorText);
-      return NextResponse.json({ error: 'Grok AI API returned an error.' }, { status: response.status });
-    }
-
-    const data = await response.json();
-    const content = data.choices?.[0]?.message?.content;
-    
-    if (!content) {
-       return NextResponse.json({ error: 'Empty response from Grok AI.' }, { status: 503 });
-    }
-
     try {
-      const parsed = extractJSON(content);
-      return NextResponse.json({ result: JSON.stringify(parsed) });
-    } catch (err) {
-      console.error('[ContractShield] JSON Parse Error from Grok:', content);
-      return NextResponse.json({ error: 'AI returned invalid data format.' }, { status: 500 });
+      const winner = await Promise.any(racePromises);
+      return NextResponse.json({ result: JSON.stringify(winner) });
+    } catch {
+      return NextResponse.json(
+        { error: 'All AI models are temporarily busy. Please wait a few seconds and try again.' },
+        { status: 503 }
+      );
     }
 
   } catch (error: unknown) {
