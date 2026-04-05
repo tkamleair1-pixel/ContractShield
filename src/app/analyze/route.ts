@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
 const SYSTEM_PROMPT = `Act as a legal document auditor. Analyze the contract and provide a risk score based strictly on the specific clauses found in this document.
 
@@ -21,113 +22,76 @@ Return this EXACT structure:
   "contractType": "<detected type: employment, rental, freelance, NDA, etc.>",
   "summary": "<exactly 2 sentences: one about what the contract covers, one about the overall risk level>",
   "clauseAnalysis": {
-    "termination": {
-      "status": "present" | "missing" | "one-sided",
-      "assessment": "<1-2 sentence evaluation>",
-      "pointsDeducted": <integer 0-25>
-    },
-    "indemnification": {
-      "status": "present" | "missing" | "one-sided",
-      "assessment": "<1-2 sentence evaluation>",
-      "pointsDeducted": <integer 0-25>
-    },
-    "liability": {
-      "status": "present" | "missing" | "one-sided",
-      "assessment": "<1-2 sentence evaluation>",
-      "pointsDeducted": <integer 0-25>
-    }
+    "termination": { "status": "present" | "missing" | "one-sided", "assessment": "...", "pointsDeducted": 0 },
+    "indemnification": { "status": "present" | "missing" | "one-sided", "assessment": "...", "pointsDeducted": 0 },
+    "liability": { "status": "present" | "missing" | "one-sided", "assessment": "...", "pointsDeducted": 0 }
   },
-  "redFlags": [
-    {
-      "risk": "<description of the risk>",
-      "evidence": "<exact quote from the contract text>",
-      "severity": "critical" | "high" | "medium"
-    }
-  ],
-  "negotiationPoints": ["<actionable negotiation advice 1>", "<actionable advice 2>"]
+  "redFlags": [{ "risk": "...", "evidence": "...", "severity": "high" }],
+  "negotiationPoints": ["..."]
 }`;
-
-// Fast, reliable free models on OpenRouter
-const MODELS = [
-  "qwen/qwen3.6-plus:free",
-  "nvidia/nemotron-3-super-120b-a12b:free",
-  "google/gemma-3-27b-it:free",
-];
 
 function extractJSON(text: string): any {
   let cleaned = text.trim();
   cleaned = cleaned.replace(/^```json\s*/i, '').replace(/^```\s*/i, '').replace(/\s*```$/i, '').trim();
-  cleaned = cleaned.replace(/<think>[\s\S]*?<\/think>/gi, '').trim();
   const match = cleaned.match(/\{[\s\S]*\}/);
   if (match) cleaned = match[0];
   return JSON.parse(cleaned);
 }
 
-async function callOpenRouter(model: string, contractText: string, apiKey: string): Promise<any | null> {
-  const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      "Authorization": `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-      "HTTP-Referer": "http://localhost:3000",
-      "X-Title": "ContractShield"
-    },
-    body: JSON.stringify({
-      model,
-      messages: [
-        { role: "system", content: SYSTEM_PROMPT },
-        { role: "user", content: `Analyze this contract:\n\n${contractText}` }
-      ],
-      temperature: 0.1,
-      max_tokens: 3000,
-    })
-  });
+// ─── Direct Gemini Analysis ─────────────────────────────────────────
+async function tryGemini(contractText: string, apiKey: string): Promise<any | null> {
+  try {
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const result = await model.generateContent([SYSTEM_PROMPT, `Analyze this contract:\n\n${contractText}`]);
+    const text = result.response.text();
+    return extractJSON(text);
+  } catch (err) {
+    console.error('[ContractShield] Direct Gemini failed:', err);
+    return null;
+  }
+}
 
-  if (!response.ok) return null;
-
-  const data = await response.json();
-  const content = data.choices?.[0]?.message?.content;
-  if (!content) return null;
-
-  return extractJSON(content);
+// ─── OpenRouter Fallback ──────────────────────────────────────────── (Silent backup)
+async function tryOpenRouter(contractText: string, apiKey: string): Promise<any | null> {
+  try {
+    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+      method: "POST",
+      headers: { "Authorization": `Bearer ${apiKey}`, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "google/gemini-2.0-flash-exp:free",
+        messages: [{ role: "system", content: SYSTEM_PROMPT }, { role: "user", content: `Analyze this contract:\n\n${contractText}` }],
+        temperature: 0.1
+      })
+    });
+    if (!response.ok) return null;
+    const data = await response.json();
+    return extractJSON(data.choices[0].message.content);
+  } catch { return null; }
 }
 
 export async function POST(req: NextRequest) {
   try {
     const { contractText } = await req.json();
+    if (!contractText) return NextResponse.json({ error: 'No text.' }, { status: 400 });
 
-    if (!contractText || typeof contractText !== 'string') {
-      return NextResponse.json({ error: 'Missing contract text.' }, { status: 400 });
+    // 1. Try Direct Gemini first
+    const geminiKey = process.env.GEMINI_API_KEY;
+    if (geminiKey) {
+      const res = await tryGemini(contractText, geminiKey);
+      if (res) return NextResponse.json({ result: JSON.stringify(res) });
     }
 
-    const apiKey = process.env.OPENROUTER_API_KEY;
-    if (!apiKey) {
-      return NextResponse.json({ error: 'OPENROUTER_API_KEY not set.' }, { status: 500 });
+    // 2. Try OpenRouter backup if Gemini fails
+    const orKey = process.env.OPENROUTER_API_KEY;
+    if (orKey) {
+      const res = await tryOpenRouter(contractText, orKey);
+      if (res) return NextResponse.json({ result: JSON.stringify(res) });
     }
 
-    // Parallel race — all 3 models fire at once, first one to succeed wins
-    const racePromises = MODELS.map(async (model) => {
-      const result = await callOpenRouter(model, contractText, apiKey);
-      if (result) {
-        console.log(`[ContractShield] ✅ Success: ${model}`);
-        return result;
-      }
-      throw new Error(`${model} failed`);
-    });
+    return NextResponse.json({ error: 'All AI models are busy. Try again in 10s.' }, { status: 503 });
 
-    try {
-      const winner = await Promise.any(racePromises);
-      return NextResponse.json({ result: JSON.stringify(winner) });
-    } catch {
-      return NextResponse.json(
-        { error: 'All AI models are temporarily busy. Please wait a few seconds and try again.' },
-        { status: 503 }
-      );
-    }
-
-  } catch (error: unknown) {
-    console.error('[ContractShield] Fatal Error:', error);
-    const message = error instanceof Error ? error.message : 'Internal server error';
-    return NextResponse.json({ error: message }, { status: 500 });
+  } catch (error: any) {
+    return NextResponse.json({ error: 'Analyze error.' }, { status: 500 });
   }
 }
