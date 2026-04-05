@@ -14,21 +14,8 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!)
 
 /**
  * Send contract text to the Gemini 1.5 Flash model and receive a
- * structured {@link AnalysisResult} containing trust score, clause
+ * structured AnalysisResult containing trust score, clause
  * breakdowns, risk assessment, and negotiation guidance.
- *
- * @param contractText - The preprocessed contract text
- * @param systemPrompt - System-level instructions for the AI analyst
- * @param userPrompt   - User-level prompt wrapping the contract text
- * @returns Parsed and validated {@link AnalysisResult}
- * @throws Error if the API key is invalid, quota is exceeded, or parsing fails
- *
- * @example
- * const result = await analyzeContractWithGemini(
- *   cleanText,
- *   SYSTEM_PROMPT,
- *   buildUserPrompt(cleanText, 'rental_lease')
- * )
  */
 export async function analyzeContractWithGemini(
   contractText: string,
@@ -37,7 +24,7 @@ export async function analyzeContractWithGemini(
 ): Promise<AnalysisResult> {
   try {
     const model = genAI.getGenerativeModel({
-      model: 'gemini-1.5-flash',
+      model: 'gemini-2.0-flash',
       generationConfig: {
         temperature: 0.3,
         topP: 0.8,
@@ -47,14 +34,13 @@ export async function analyzeContractWithGemini(
     })
 
     // Combine system and user prompts into a single message
-    const prompt = `${systemPrompt}\n\n${userPrompt}`
+    const prompt = systemPrompt + '\n\n' + userPrompt
 
     const result = await model.generateContent(prompt)
     const response = result.response
     const text = response.text()
 
     // ── Extract JSON from the response ─────────────────────────
-    // The model may wrap JSON in markdown code fences; strip them.
     let jsonText = text
 
     const fencedJsonMatch = text.match(/```json\s*([\s\S]*?)\s*```/)
@@ -67,13 +53,11 @@ export async function analyzeContractWithGemini(
       }
     }
 
-    // Trim any leading/trailing whitespace
     jsonText = jsonText.trim()
 
     // ── Parse and validate ─────────────────────────────────────
     const parsed = JSON.parse(jsonText) as AnalysisResult
 
-    // Basic validation of required fields
     if (typeof parsed.trust_score !== 'number') {
       throw new Error('Response missing required field: trust_score')
     }
@@ -87,7 +71,6 @@ export async function analyzeContractWithGemini(
     const message = error instanceof Error ? error.message : String(error)
     console.error('[ContractShield] Gemini analysis error:', message)
 
-    // ── Specific error handling ────────────────────────────────
     if (message.includes('API_KEY_INVALID') || message.includes('API key')) {
       throw new Error(
         'Invalid Gemini API key. Please check your GEMINI_API_KEY in .env.local and ensure it is a valid Google AI Studio key.'
@@ -110,10 +93,7 @@ export async function analyzeContractWithGemini(
       )
     }
 
-    // Generic fallback
-    throw new Error(
-      `Failed to analyze contract. ${message}`
-    )
+    throw new Error('Failed to analyze contract. ' + message)
   }
 }
 
@@ -121,18 +101,10 @@ export async function analyzeContractWithGemini(
 
 /**
  * Verify that the Gemini API key is valid and the service is reachable.
- * Sends a trivial prompt and checks for a successful response.
- *
- * @returns `true` if the connection is healthy, `false` otherwise
- *
- * @example
- * if (await testGeminiConnection()) {
- *   console.log('Gemini API is ready')
- * }
  */
 export async function testGeminiConnection(): Promise<boolean> {
   try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' })
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' })
     const result = await model.generateContent('Hello')
     const text = result.response.text()
 

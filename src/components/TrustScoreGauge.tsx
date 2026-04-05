@@ -10,10 +10,10 @@ export interface TrustScoreGaugeProps {
 }
 
 function getColor(score: number): string {
-  if (score >= 80) return '#22c55e'; // green-500
-  if (score >= 60) return '#eab308'; // yellow-500
-  if (score >= 40) return '#f97316'; // orange-500
-  return '#ef4444'; // red-500
+  if (score >= 80) return '#22c55e';
+  if (score >= 60) return '#eab308';
+  if (score >= 40) return '#f97316';
+  return '#ef4444';
 }
 
 export function TrustScoreGauge({ score, grade }: TrustScoreGaugeProps) {
@@ -35,7 +35,7 @@ export function TrustScoreGauge({ score, grade }: TrustScoreGaugeProps) {
             fill="transparent"
             stroke="currentColor"
             strokeWidth="12"
-            className="text-gray-200 dark:text-gray-800 transition-colors"
+            className="text-muted transition-colors"
           />
           {/* Animated score circle */}
           <motion.circle
@@ -53,7 +53,7 @@ export function TrustScoreGauge({ score, grade }: TrustScoreGaugeProps) {
           />
         </svg>
 
-        {/* Absolute positioned score text overlay */}
+        {/* Score text overlay */}
         <motion.div
           className="absolute flex flex-col items-center justify-center"
           initial={{ opacity: 0, scale: 0.8 }}
@@ -63,23 +63,23 @@ export function TrustScoreGauge({ score, grade }: TrustScoreGaugeProps) {
           <span className="text-5xl font-bold" style={{ color: strokeColor }}>
             {score}
           </span>
-          <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
+          <span className="text-sm font-medium text-muted-foreground">
             / 100
           </span>
         </motion.div>
       </div>
 
-      {/* Grade display below gauge */}
+      {/* Grade display */}
       <motion.div
         className="flex flex-col items-center"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 1 }}
       >
-        <span className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
+        <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
           Trust Grade
         </span>
-        <span className={\`text-3xl font-extrabold \${getGradeColor(score)}\`}>
+        <span className={`text-3xl font-extrabold ${getGradeColor(score)}`}>
           {grade}
         </span>
       </motion.div>

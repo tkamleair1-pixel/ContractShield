@@ -9,11 +9,9 @@ import pdf from 'pdf-parse';
  */
 export async function POST(req: NextRequest) {
   try {
-    // 1. Get file from formData
     const formData = await req.formData();
     const file = formData.get('file') as File | null;
 
-    // 2. Validation
     if (!file) {
       return NextResponse.json(
         { success: false, error: 'No file provided in the request.' },
@@ -28,7 +26,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const maxSize = 5 * 1024 * 1024; // 5MB
+    const maxSize = 5 * 1024 * 1024;
     if (file.size > maxSize) {
       return NextResponse.json(
         { success: false, error: 'File too large. Maximum size is 5MB.' },
@@ -36,14 +34,11 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 3. Convert File to Buffer
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
-    // 4. Parse PDF
     const data = await pdf(buffer);
 
-    // 5. Validate extracted text
     const extractedText = data.text ? data.text.trim() : '';
     
     if (!extractedText || extractedText.length < 100) {
@@ -56,7 +51,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 6. Return success
     return NextResponse.json({
       success: true,
       text: extractedText,
@@ -72,7 +66,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(
       { 
         success: false, 
-        error: \`Failed to process the PDF document. \${message}\` 
+        error: 'Failed to process the PDF document. ' + message
       },
       { status: 500 }
     );

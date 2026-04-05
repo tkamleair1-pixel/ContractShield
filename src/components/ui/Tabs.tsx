@@ -51,7 +51,10 @@ const TabsList = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivEl
   ({ className, ...props }, ref) => (
     <div
       ref={ref}
-      className={cn('inline-flex items-center justify-center rounded-md bg-gray-100 p-1 text-gray-500', className)}
+      className={cn(
+        'inline-flex items-center justify-center rounded-xl bg-muted p-1 text-muted-foreground',
+        className
+      )}
       {...props}
     />
   )
@@ -77,10 +80,10 @@ const TabsTrigger = React.forwardRef<HTMLButtonElement, TabsTriggerProps>(
         aria-selected={isActive}
         onClick={() => context.onValueChange(value)}
         className={cn(
-          'inline-flex items-center justify-center whitespace-nowrap rounded-xs px-3 py-1.5 text-sm font-medium transition-all focus:outline-hidden focus:ring-2 focus:ring-blue-500 disabled:pointer-events-none disabled:opacity-50',
+          'inline-flex items-center justify-center whitespace-nowrap rounded-lg px-3 py-1.5 text-sm font-medium transition-all duration-200 focus:outline-hidden focus:ring-2 focus:ring-primary/50 disabled:pointer-events-none disabled:opacity-50',
           isActive
-            ? 'bg-white text-gray-950 shadow-xs'
-            : 'hover:bg-gray-200 hover:text-gray-900',
+            ? 'bg-card text-foreground shadow-sm'
+            : 'text-muted-foreground hover:bg-card/50 hover:text-foreground',
           className
         )}
         {...props}
@@ -107,7 +110,7 @@ const TabsContent = React.forwardRef<HTMLDivElement, TabsContentProps>(
       <div
         ref={ref}
         role="tabpanel"
-        className={cn('mt-2', className)}
+        className={cn('mt-2 animate-fade-in', className)}
         {...props}
       />
     );

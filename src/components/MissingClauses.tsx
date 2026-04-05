@@ -10,59 +10,49 @@ export interface MissingClausesProps {
   clauses: MissingClause[];
 }
 
-// Utility to assign background and border hues based on graded severity scale
 function getImportanceColor(importance: string) {
   switch (importance.toLowerCase()) {
     case 'critical':
-      return 'border-red-500 bg-red-50 dark:bg-red-900/10 dark:border-red-500/50';
+      return 'border-l-red-500 bg-red-500/5';
     case 'high':
-      return 'border-orange-500 bg-orange-50 dark:bg-orange-900/10 dark:border-orange-500/50';
+      return 'border-l-orange-500 bg-orange-500/5';
     case 'medium':
-      return 'border-yellow-500 bg-yellow-50 dark:bg-yellow-900/10 dark:border-yellow-500/50';
+      return 'border-l-yellow-500 bg-yellow-500/5';
     case 'low':
-      return 'border-gray-500 bg-gray-50 dark:bg-gray-800/50 dark:border-gray-500/50';
+      return 'border-l-gray-400 bg-muted/30';
     default:
-      return 'border-gray-300 bg-gray-50 dark:bg-gray-800/50 dark:border-gray-700';
+      return 'border-l-gray-400 bg-muted/30';
   }
 }
 
-// Generates explicit tailwind labels matching color scheme map
 function getBadgeColor(importance: string) {
   switch (importance.toLowerCase()) {
     case 'critical':
-      return 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400 border-red-200 dark:border-red-800';
+      return 'bg-red-500/10 text-red-600 dark:text-red-400 border-red-500/20';
     case 'high':
-      return 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400 border-orange-200 dark:border-orange-800';
+      return 'bg-orange-500/10 text-orange-600 dark:text-orange-400 border-orange-500/20';
     case 'medium':
-      return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400 border-yellow-200 dark:border-yellow-800';
+      return 'bg-yellow-500/10 text-yellow-600 dark:text-yellow-400 border-yellow-500/20';
     case 'low':
-      return 'bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600';
+      return 'bg-muted text-muted-foreground border-border';
     default:
-      return 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400 border-gray-200 dark:border-gray-700';
+      return 'bg-muted text-muted-foreground border-border';
   }
 }
 
-// Converts generic string grading into a numerical sortable index
 function getImportanceValue(importance: string) {
   switch (importance.toLowerCase()) {
-    case 'critical':
-      return 4;
-    case 'high':
-      return 3;
-    case 'medium':
-      return 2;
-    case 'low':
-      return 1;
-    default:
-      return 0;
+    case 'critical': return 4;
+    case 'high': return 3;
+    case 'medium': return 2;
+    case 'low': return 1;
+    default: return 0;
   }
 }
 
 export function MissingClauses({ clauses }: MissingClausesProps) {
-  // Gracefully yield immediately if no clauses present
   if (!clauses || clauses.length === 0) return null;
 
-  // Clone array and sort based on importance values (Critical => High => Medium => Low)
   const sortedClauses = [...clauses].sort(
     (a, b) => getImportanceValue(b.importance) - getImportanceValue(a.importance)
   );
@@ -81,15 +71,15 @@ export function MissingClauses({ clauses }: MissingClausesProps) {
   };
 
   return (
-    <Card className="border-yellow-500 dark:border-yellow-600 shadow-xs overflow-hidden bg-white dark:bg-gray-900">
-      {/* Alert Header Lockup */}
-      <div className="p-5 border-b border-gray-100 dark:border-gray-800 bg-yellow-50/50 dark:bg-yellow-900/10 flex items-start sm:items-center gap-3">
-        <AlertTriangle className="w-6 h-6 text-yellow-600 dark:text-yellow-500 shrink-0 mt-0.5 sm:mt-0" />
+    <Card className="border-yellow-500/50 overflow-hidden">
+      {/* Alert Header */}
+      <div className="p-5 border-b border-border bg-yellow-500/5 flex items-start sm:items-center gap-3">
+        <AlertTriangle className="w-6 h-6 text-yellow-500 shrink-0 mt-0.5 sm:mt-0" />
         <div>
-          <h3 className="font-bold text-gray-900 dark:text-gray-100 text-lg uppercase tracking-tight">
+          <h3 className="font-bold text-foreground text-lg tracking-tight">
             ⚠️ Missing Clauses Detected
           </h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mt-0.5">
+          <p className="text-sm text-muted-foreground mt-0.5">
             These protections are typically included but are absent from this contract.
           </p>
         </div>
@@ -104,23 +94,23 @@ export function MissingClauses({ clauses }: MissingClausesProps) {
         >
           {sortedClauses.map((clause, index) => (
             <motion.div
-              key={\`\${clause.clause_name}-\${index}\`}
+              key={`${clause.clause}-${index}`}
               variants={itemVariants}
-              className={\`p-4 border-l-4 rounded-r-md \${getImportanceColor(clause.importance)}\`}
+              className={`p-4 border-l-4 rounded-r-xl ${getImportanceColor(clause.importance)}`}
             >
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
-                <h4 className="font-semibold text-gray-900 dark:text-gray-100 leading-tight">
-                  {clause.clause_name}
+                <h4 className="font-semibold text-foreground leading-tight">
+                  {clause.clause}
                 </h4>
                 <span
-                  className={\`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border shrink-0 w-fit \${getBadgeColor(
+                  className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border shrink-0 w-fit ${getBadgeColor(
                     clause.importance
-                  )}\`}
+                  )}`}
                 >
                   {clause.importance}
                 </span>
               </div>
-              <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+              <p className="text-sm text-foreground/80 leading-relaxed">
                 {clause.explanation}
               </p>
             </motion.div>

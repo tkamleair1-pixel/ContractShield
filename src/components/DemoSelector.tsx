@@ -11,79 +11,69 @@ export interface DemoSelectorProps {
 
 export function DemoSelector({ onSelect, disabled = false }: DemoSelectorProps) {
   const [selectedDemo, setSelectedDemo] = useState<string | null>(null);
-  const [demoTexts, setDemoTexts] = useState<Record<string, string>>({});
-
-  useEffect(() => {
-    async function loadDemos() {
-      try {
-        const fetchPromises = DEMO_CONTRACTS_INFO.map(async (demo) => {
-          const response = await fetch(`/demo-contracts/${demo.id}.txt`);
-          if (!response.ok) return [demo.id, ''];
-          const text = await response.text();
-          return [demo.id, text];
-        });
-
-        const results = await Promise.all(fetchPromises);
-        const newDemoTexts = Object.fromEntries(results);
-        setDemoTexts(newDemoTexts);
-      } catch (error) {
-        console.error('Failed to load demo contracts:', error);
-      }
-    }
-
-    loadDemos();
-  }, []);
 
   const handleSelectDemo = (demoId: string) => {
     if (disabled) return;
-    const text = demoTexts[demoId];
-    if (text) {
-      onSelect(text);
+    const demo = DEMO_CONTRACTS_INFO.find((d) => d.id === demoId);
+    if (demo?.rawText) {
+      onSelect(demo.rawText);
       setSelectedDemo(demoId);
     }
   };
 
-  const getBadgeColor = (score: number) => {
+  const getBadgeStyle = (score: number) => {
     if (score >= 70) {
-      return 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 border-green-200 dark:border-green-800';
+      return 'bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/20';
     }
     if (score >= 40) {
-      return 'bg-yellow-100 text-yellow-800 dark:bg-orange-900/30 dark:text-orange-400 border-yellow-200 dark:border-orange-800';
+      return 'bg-yellow-500/10 text-yellow-600 dark:text-yellow-400 border-yellow-500/20';
     }
-    return 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400 border-red-200 dark:border-red-800';
+    return 'bg-red-500/10 text-red-600 dark:text-red-400 border-red-500/20';
   };
 
   return (
     <div className="space-y-4">
-      <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
-        Try a demo contract
-      </h3>
+      <div className="flex items-center justify-between">
+        <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
+          Quick Start: Choose a Demo
+        </h3>
+        <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20 animate-pulse">
+          Featured
+        </span>
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {DEMO_CONTRACTS_INFO.map((demo) => (
           <Card
             key={demo.id}
             onClick={() => handleSelectDemo(demo.id)}
-            className={`cursor-pointer transition-all duration-200 p-5 hover:shadow-lg dark:hover:shadow-black/40 flex flex-col items-start gap-3 h-full ${
+            className={`cursor-pointer transition-all duration-300 p-5 hover:shadow-xl flex flex-col items-start gap-3 h-full group overflow-hidden relative ${
               disabled ? 'opacity-50 pointer-events-none' : ''
             } ${
               selectedDemo === demo.id
-                ? 'ring-2 ring-blue-500 border-transparent dark:ring-blue-500'
-                : 'border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-700/50'
+                ? 'ring-2 ring-primary border-primary/40 bg-primary/[0.03] scale-[1.02]'
+                : 'hover:border-primary/30 hover:-translate-y-1 bg-card/50 backdrop-blur-sm'
             }`}
           >
-            <div className="text-3xl">{demo.icon}</div>
-            <div className="flex-1 space-y-1.5">
-              <h4 className="font-semibold text-gray-900 dark:text-gray-100 leading-tight">
+            {/* Background Glow */}
+            <div className={`absolute -right-4 -top-4 w-20 h-20 blur-3xl opacity-0 transition-opacity duration-500 group-hover:opacity-20 ${
+              demo.expectedScore >= 70 ? 'bg-green-500' : demo.expectedScore >= 40 ? 'bg-yellow-500' : 'bg-red-500'
+            }`} />
+
+            <div className="text-3xl transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6">
+              {demo.icon}
+            </div>
+            <div className="flex-1 space-y-1.5 relative z-10">
+              <h4 className="font-bold text-foreground leading-tight text-lg group-hover:text-primary transition-colors">
                 {demo.title}
               </h4>
-              <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
+              <p className="text-xs text-muted-foreground leading-relaxed">
                 {demo.description}
               </p>
             </div>
-            <div className="mt-auto pt-4 w-full">
+            <div className="mt-auto pt-3 w-full relative z-10">
               <span
-                className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border ${getBadgeColor(
+                className={`inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border shadow-sm ${getBadgeStyle(
                   demo.expectedScore
                 )}`}
               >

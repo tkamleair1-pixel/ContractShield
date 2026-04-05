@@ -17,14 +17,32 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="antialiased">
+    <html lang="en" className="dark antialiased" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var t = localStorage.getItem('contractshield-theme');
+                  if (t === 'light') {
+                    document.documentElement.classList.remove('dark');
+                  } else {
+                    document.documentElement.classList.add('dark');
+                  }
+                } catch(e) {}
+              })();
+            `,
+          }}
+        />
+      </head>
       <body className={inter.className}>
-        <div className="min-h-screen bg-linear-to-br from-blue-50 via-white to-purple-50 dark:from-gray-950 dark:via-gray-900 dark:to-slate-900 flex flex-col">
+        <div className="min-h-screen bg-background transition-colors duration-300 flex flex-col">
           <main className="flex-1">
             {children}
           </main>
-          <footer className="text-center py-8 text-sm text-gray-500 dark:text-gray-400 bg-transparent shrink-0">
-            <p>⚖️ ContractShield - Not legal advice. Consult an attorney for legal decisions.</p>
+          <footer className="text-center py-6 text-sm text-muted-foreground bg-transparent shrink-0">
+            <p>⚖️ ContractShield — Not legal advice. Consult an attorney for legal decisions.</p>
           </footer>
         </div>
       </body>

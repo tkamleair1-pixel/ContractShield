@@ -6,13 +6,13 @@ export interface BadgeProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 function Badge({ className, variant = 'default', ...props }: BadgeProps) {
-  const baseClasses = 'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold';
-  
+  const baseClasses = 'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold transition-colors';
+
   const variantClasses = {
-    default: 'bg-gray-100 text-gray-800',
-    success: 'bg-green-100 text-green-800',
-    warning: 'bg-yellow-100 text-yellow-800',
-    destructive: 'bg-red-100 text-red-800',
+    default: 'bg-muted text-muted-foreground',
+    success: 'bg-green-500/10 text-green-600 dark:text-green-400',
+    warning: 'bg-yellow-500/10 text-yellow-600 dark:text-yellow-400',
+    destructive: 'bg-red-500/10 text-red-600 dark:text-red-400',
   };
 
   return (

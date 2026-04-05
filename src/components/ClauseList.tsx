@@ -14,7 +14,6 @@ export interface ClauseListProps {
 export function ClauseList({ clauses, initialFilter = 'all' }: ClauseListProps) {
   const [activeFilter, setActiveFilter] = useState<ClauseCategory | 'all'>(initialFilter);
 
-  // Segment clause counting
   const redCount = clauses.filter((c) => c.category === 'red').length;
   const yellowCount = clauses.filter((c) => c.category === 'yellow').length;
   const greenCount = clauses.filter((c) => c.category === 'green').length;
@@ -22,7 +21,6 @@ export function ClauseList({ clauses, initialFilter = 'all' }: ClauseListProps) 
   const filteredClauses =
     activeFilter === 'all' ? clauses : clauses.filter((c) => c.category === activeFilter);
 
-  // Framer motion variants mapped
   const containerVariants = {
     hidden: { opacity: 0 },
     show: {
@@ -43,47 +41,46 @@ export function ClauseList({ clauses, initialFilter = 'all' }: ClauseListProps) 
       id: 'all',
       label: 'All',
       count: clauses.length,
-      colorClass: 'bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-200',
+      colorClass: 'bg-muted text-muted-foreground',
     },
     {
       id: 'red',
       label: 'Red Flags',
       count: redCount,
-      colorClass: 'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-400',
+      colorClass: 'bg-red-500/10 text-red-500',
     },
     {
       id: 'yellow',
       label: 'Negotiate',
       count: yellowCount,
-      colorClass: 'bg-yellow-100 text-yellow-800 dark:bg-orange-900/40 dark:text-orange-400',
+      colorClass: 'bg-yellow-500/10 text-yellow-500',
     },
     {
       id: 'green',
       label: 'Standard',
       count: greenCount,
-      colorClass: 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-400',
+      colorClass: 'bg-green-500/10 text-green-500',
     },
   ];
 
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 tracking-tight">
+      <h2 className="text-2xl font-bold text-foreground tracking-tight">
         Detailed Analysis
       </h2>
 
       <Tabs value={activeFilter} onValueChange={(val) => setActiveFilter(val as ClauseCategory | 'all')}>
-        {/* Scrollable container mapped to hide bars safely on mobile */}
         <div className="overflow-x-auto pb-2 -mx-1 px-1 scrollbar-hide">
-          <TabsList className="inline-flex min-w-max p-1 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-xs rounded-lg">
+          <TabsList className="inline-flex min-w-max p-1 bg-muted border border-border rounded-xl">
             {filters.map((filter) => (
               <TabsTrigger
                 key={filter.id}
                 value={filter.id}
-                className="gap-2 px-4 py-2 text-sm font-medium rounded-md"
+                className="gap-2 px-4 py-2 text-sm font-medium rounded-lg"
               >
                 {filter.label}
                 <span
-                  className={\`inline-flex items-center justify-center px-2 py-0.5 rounded-full text-xs font-bold \${filter.colorClass}\`}
+                  className={`inline-flex items-center justify-center px-2 py-0.5 rounded-full text-xs font-bold ${filter.colorClass}`}
                 >
                   {filter.count}
                 </span>
@@ -92,13 +89,12 @@ export function ClauseList({ clauses, initialFilter = 'all' }: ClauseListProps) 
           </TabsList>
         </div>
 
-        {/* Generate discrete panels resolving specific queries */}
         {filters.map((filter) => (
           <TabsContent key={filter.id} value={filter.id} className="mt-4">
             {filteredClauses.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-16 px-4 border-2 border-dashed rounded-xl border-gray-200 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-900/50">
+              <div className="flex flex-col items-center justify-center py-16 px-4 border-2 border-dashed rounded-2xl border-border bg-muted/30">
                 <span className="text-3xl mb-3">📭</span>
-                <p className="text-gray-500 dark:text-gray-400 font-medium">
+                <p className="text-muted-foreground font-medium">
                   No {filter.id !== 'all' ? filter.label.toLowerCase() : ''} clauses found in this document.
                 </p>
               </div>
@@ -108,7 +104,7 @@ export function ClauseList({ clauses, initialFilter = 'all' }: ClauseListProps) 
                 variants={containerVariants}
                 initial="hidden"
                 animate="show"
-                key={activeFilter} // Binds specific animation key map triggering resets on tab bumps
+                key={activeFilter}
               >
                 {filteredClauses.map((clause) => (
                   <motion.div key={clause.id} variants={itemVariants}>

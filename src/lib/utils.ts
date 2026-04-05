@@ -59,10 +59,10 @@ export function formatContractType(type: string): string {
  * getGradeColor(55) // → 'text-yellow-600'
  */
 export function getGradeColor(score: number): string {
-  if (score >= 80) return 'text-green-600'
-  if (score >= 60) return 'text-yellow-600'
-  if (score >= 40) return 'text-orange-600'
-  return 'text-red-600'
+  if (score >= 80) return 'text-green-500'
+  if (score >= 60) return 'text-yellow-500'
+  if (score >= 40) return 'text-orange-500'
+  return 'text-red-500'
 }
 
 /**
@@ -70,24 +70,20 @@ export function getGradeColor(score: number): string {
  *
  * @param level - Risk level string (e.g. 'critical', 'high', 'moderate', 'low', 'minimal')
  * @returns Combined Tailwind class string for badge styling
- *
- * @example
- * getRiskLevelColor('critical') // → 'bg-red-100 text-red-800'
- * getRiskLevelColor('low')      // → 'bg-green-100 text-green-800'
  */
 export function getRiskLevelColor(level: string): string {
   switch (level) {
     case 'minimal':
     case 'low':
-      return 'bg-green-100 text-green-800'
+      return 'bg-green-500/10 text-green-600 dark:text-green-400'
     case 'moderate':
-      return 'bg-yellow-100 text-yellow-800'
+      return 'bg-yellow-500/10 text-yellow-600 dark:text-yellow-400'
     case 'high':
-      return 'bg-orange-100 text-orange-800'
+      return 'bg-orange-500/10 text-orange-600 dark:text-orange-400'
     case 'critical':
-      return 'bg-red-100 text-red-800'
+      return 'bg-red-500/10 text-red-600 dark:text-red-400'
     default:
-      return 'bg-gray-100 text-gray-800'
+      return 'bg-muted text-muted-foreground'
   }
 }
 

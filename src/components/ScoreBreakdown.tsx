@@ -18,22 +18,21 @@ const METRICS = [
   { key: 'balance_of_power', label: 'Balance of Power', icon: '🤝' },
 ] as const;
 
-function getScoreColor(score: number): string {
-  if (score >= 80) return 'bg-green-500!';
-  if (score >= 60) return 'bg-yellow-500!';
-  if (score >= 40) return 'bg-orange-500!';
-  return 'bg-red-500!';
+function getScoreBarColor(score: number): string {
+  if (score >= 80) return '#22c55e';
+  if (score >= 60) return '#eab308';
+  if (score >= 40) return '#f97316';
+  return '#ef4444';
 }
 
 function getTextStyle(score: number): string {
-  if (score >= 80) return 'text-green-600 dark:text-green-400';
-  if (score >= 60) return 'text-yellow-600 dark:text-yellow-400';
-  if (score >= 40) return 'text-orange-600 dark:text-orange-400';
-  return 'text-red-600 dark:text-red-400';
+  if (score >= 80) return 'text-green-500';
+  if (score >= 60) return 'text-yellow-500';
+  if (score >= 40) return 'text-orange-500';
+  return 'text-red-500';
 }
 
 export function ScoreBreakdown({ breakdown }: ScoreBreakdownProps) {
-  // Stagger container
   const containerVariants = {
     hidden: { opacity: 0 },
     show: {
@@ -45,19 +44,18 @@ export function ScoreBreakdown({ breakdown }: ScoreBreakdownProps) {
     },
   };
 
-  // Item variants
   const itemVariants = {
     hidden: { opacity: 0, y: 15 },
     show: { opacity: 1, y: 0, transition: { duration: 0.4 } },
   };
 
   return (
-    <Card className="w-full shadow-xs dark:bg-gray-900 overflow-hidden border-gray-200 dark:border-gray-800">
-      <CardHeader className="border-b border-gray-100 dark:border-gray-800/50 pb-4 bg-gray-50/50 dark:bg-gray-800/20">
-        <CardTitle className="text-xl text-gray-900 dark:text-gray-100 font-bold">
+    <Card className="w-full overflow-hidden">
+      <CardHeader className="border-b border-border pb-4 bg-muted/30">
+        <CardTitle className="text-xl font-bold">
           Score Breakdown
         </CardTitle>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+        <p className="text-sm text-muted-foreground mt-1">
           How we calculated the trust score
         </p>
       </CardHeader>
@@ -71,8 +69,8 @@ export function ScoreBreakdown({ breakdown }: ScoreBreakdownProps) {
         >
           {METRICS.map(({ key, label, icon }) => {
             const scoreValue = breakdown[key as keyof ScoreBreakdownType] || 0;
-            const barFillColor = getScoreColor(scoreValue);
-            const textFillColor = getTextStyle(scoreValue);
+            const barColor = getScoreBarColor(scoreValue);
+            const textColor = getTextStyle(scoreValue);
 
             return (
               <motion.div
@@ -80,27 +78,32 @@ export function ScoreBreakdown({ breakdown }: ScoreBreakdownProps) {
                 variants={itemVariants}
                 className="grid grid-cols-1 sm:grid-cols-[1fr_2fr_auto] gap-3 sm:gap-6 items-center"
               >
-                {/* Label Row */}
+                {/* Label */}
                 <div className="flex items-center gap-2">
                   <span className="text-lg shrink-0" aria-hidden="true">
                     {icon}
                   </span>
-                  <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                  <span className="text-sm font-semibold text-foreground/80">
                     {label}
                   </span>
                 </div>
 
                 {/* Progress Bar */}
                 <div className="w-full flex items-center">
-                  <Progress
-                    value={scoreValue}
-                    className={\`h-2.5 dark:bg-gray-800 [&>div]:\${barFillColor}\`}
-                  />
+                  <div className="relative h-2.5 w-full overflow-hidden rounded-full bg-muted">
+                    <motion.div
+                      className="h-full rounded-full"
+                      style={{ backgroundColor: barColor }}
+                      initial={{ width: 0 }}
+                      animate={{ width: `${scoreValue}%` }}
+                      transition={{ duration: 0.8, ease: 'easeOut', delay: 0.3 }}
+                    />
+                  </div>
                 </div>
 
-                {/* Number Display */}
+                {/* Number */}
                 <div className="text-right sm:w-12">
-                  <span className={\`text-lg font-bold \${textFillColor}\`}>
+                  <span className={`text-lg font-bold ${textColor}`}>
                     {scoreValue}
                   </span>
                 </div>
